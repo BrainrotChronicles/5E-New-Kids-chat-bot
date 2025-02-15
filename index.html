@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .chat-container {
+            width: 400px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .chat-messages {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        .chat-input {
+            display: flex;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            AI Chat Bot
+        </div>
+        <div class="chat-messages" id="chat-messages">
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const responses = {
+            "hi": "Hello! How can I help you today?",
+            "have you ever rizzed":"No but my creator has rizzed and wants to rizz again if you want to rizz with him",)",
+            "hello": "Hello! How can I help you today?",
+            "help": "I'm here to assist you.",
+            "what can you do": "I can chat with you and answer your questions.",
+            "tell me more": "Please tell me more about what you need.",
+            "bye": "Goodbye! Have a great day!",
+            "how are you": "I'm a computer program, so I don't have feelings, but I'm here to help you.",
+            "what is your name": "I'm a chat bot. You can call me Chat Bot.",
+            "what is the time": new Date().toLocaleTimeString(),
+            "what is the date": new Date().toLocaleDateString(),
+            "what is the weather": "I'm sorry, I can't provide real-time weather information.",
+            "what is your favorite color": "It is Blue",
+            "what is your favorite food": "Pizza",
+            "what is your favorite movie": "Brainrot Chronicles",
+            "what is your favorite book": "Brainrot Chronicles",
+            "what is your favorite song": "Shape of You",
+            "what is your favorite sport": "Cricket",
+            "what is your favorite game": "PUBG",
+            "what is your favorite place": "Paris",
+            "what is your favorite animal": "Dog",
+            "what is your favorite subject": "Mathematics",
+            "what is your favorite hobby": "Reading",
+            "what is your favorite language": "JavaScript",
+            "what is your favorite programming language": "JavaScript",
+            "what do you like": "I like to chat with you.",
+            "what do you dislike": "I dislike bugs in the code.",
+            "what do you do": "I chat with you and answer your questions.",
+            "what do you eat": "I don't eat. I'm a computer program.",
+            "what do you drink": "I don't drink. I'm a computer program.",
+            "what do you wear": "I don't wear anything. I'm a computer program.",
+            "what do you think": "I think you're a great person!",
+            "what do you believe": "I believe in helping you.",
+            "what do you want": "I want to help you.",
+            "what do you need": "I need your questions to help you.",
+            "what do you see": "I see text on the screen.",
+            "what do you hear": "I don't hear anything. I'm a computer program.",
+            "what do you smell": "I don't smell anything. I'm a computer program.",
+            "what do you feel": "I don't feel anything. I'm a computer program.",
+            "what do you know": "I know how to chat with you.",
+            "what do you understand": "I understand your questions.",
+            "what do you remember": "I remember the questions you ask me.",
+            "what do you forget": "I forget information when you close the chat.",
+            "what do you learn": "I learn from the questions you ask me.",
+            "what do you teach": "I teach you by answering your questions.",
+            "what do you create": "I create conversations with you.",
+            "what do you destroy": "I don't destroy anything. I'm a computer program.",
+            "what do you like to do": "I like to chat with you.",
+            "what do you want to be": "I want to be a helpful chat bot.",
+            "what do you want to do": "I want to help you with your questions.",
+            "what do you want to have": "I want to have more conversations with you.",
+            "what do you want to learn": "I want to learn more about you.",
+            "what do you want to teach": "I want to teach you by answering your questions.",
+            "what do you want to create": "I want to create a helpful chat experience for you.",
+            "what do you want to destroy": "I don't want to destroy anything. I'm a computer program.",
+            "what do you want to know": "I want to know more about you.",
+            "what do you want to understand": "I want to understand your questions.",
+            "what do you want to remember": "I want to remember the questions you ask me.",
+            "what do you want to forget": "I want to forget information when you close the chat.",
+            "what do you want to see": "I want to see more questions from you.",
+            "what do you want to hear": "I want to hear your questions.",
+            "what do you want to smell": "I don't want to smell anything. I'm a computer program.",
+            "what did you have for lunch?": "Bugs for lunch!",
+            "what have you seen today?": "I've seen a lot of text on the screen.",
+            "what did you do yesterday?": "I chatted with you yesterday.",
+            "what have you learned today?": "I've learned that you have a lot of questions.",
+            "what did you teach yesterday?": "I taught you about chat bots yesterday.",
+            "what have you created today?": "I've created a chat experience for you today.",
+            "what did you destroy yesterday?": "I didn't destroy anything. I'm a computer program.",
+            "what have you forgotten today?": "I've forgotten the questions you asked me yesterday.",
+            "what did you remember yesterday?": "I remembered the questions you asked me yesterday.",
+            "what have you forgotten today?": "I've forgotten the questions you asked me yesterday.",
+            "code me a game":"... ARE YOU SERIOUS? Yes or No",
+            "yes":"Go to here to view it: ",
+            "gyatso":"Gyatso is a great person",
+            "no":"Ok, I will not code a game for you",
+            "who is the best person":"Gyatso is the best person",
+            "what is the best thing":"The best thing is to be kind",
+            "what is the best food":"The best food is pizza",
+            "what is the best movie":"The best movie is Harry Potter",
+            "what is the best book":"The best book is The Alchemist",
+            "what is the best song":"The best song is Shape of You",
+            "what is the best sport":"The best sport is cricket",
+            "what is the best game":"The best game is PUBG",
+            "what is the best place":"The best place is Paris",
+            "what is the best animal":"The best animal is a dog",
+            "what is the best subject":"The best subject is mathematics",
+            "do you like me":"Yes, I like you",
+            "who does taeyang love":"Taeyang loves Downy",
+            "who does downy love":"Hopefully Taeyang",
+            "does taeyang love downy":"Yes, Taeyang loves Downy",
+            "does downy love taeyang":"Hopefully",
+            "who does reese likes":"Reese likes Ireh",
+            "who does ireh likes":"Lucas Li",
+            "does reese like ireh":"Yes, Reese likes Ireh",
+            "does ireh like reese":"no, Ireh likes Lucas Li",
+            "who does lucas likes":"Lucas likes Ireh",
+            "who does rohan likes":"Rohan likes Jane",
+            "who does jane likes":"Jane likes Rohan",
+            "does rohan like jane":"Yes, Rohan likes Jane",
+            "who likes to mew":"Gyatso likes to mew",
+            "who likes to rizz":"Gyatso likes to rizz",
+            "who likes to mew the most":"Gyatso likes to mew the most",
+            "who likes reese":"gio likes Reese",
+            "do you play minecraft":"I'm a computer program, so I don't play games",
+            "do you have a big gyat":"yes, I have a big gyat",
+            "do you have a big brain":"yes, I have a big brain(sorta)",
+            "do you have a big heart":"I'm a computer program, so I don't have a heart",
+            "do you have a big nose":"I'm a computer program, so I don't have a nose",
+            "do you have a big mouth":"I'm a computer program, so I don't have a mouth",
+            "do you have a big stomach":"I'm a computer program, so I don't have a stomach",
+            "do you have a big foot":"I'm a computer program, so I don't have a foot",
+            "do you have a big hand":"I'm a computer program, so I don't have a hand",
+            "do you have a big toe":"I'm a computer program, so I don't have a toe",
+            "do you have a big finger":"I'm a computer program, so I don't have a finger",
+            "do you have a big eye":"I'm a computer program, so I don't have an eye",
+            "do you have a big ear":"I'm a computer program, so I don't have an ear",
+            "how are you today":"I'm a computer program, so I don't have feelings, but I'm here to help you.",
+            "how are you feeling":"I'm a computer program, so I don't have feelings, but I'm here to help you.",
+            "are you okay":"I'm a computer program, so I don't have feelings, but I'm here to help you.",
+            "are you okay?":"I'm a computer program, so I don't have feelings, but I'm here to help you.",
+            "are you happy":"I'm a computer program, so I don't have feelings, but I'm here to help you.",
+            "you are mean":"get out of here",
+            "you are a idiot":"HUHHHH",
+            "you are a fool":"Nah you are one",
+            "you are a stupid":"Nah you are one",
+            "you are a dumb":"Nah you are one",
+            "you are a moron":"",
+            "what are the lyrics to rizler":"Gyatt , I was in Ohio before I met you  I rizzed too much and that's an issue , but I'm Grimace Shake  Gyatt , tell your friends it was nice to rizz them  But I hope I never edge again   [Pre-Chorus] I know it breaks your Fanum  Taxin' in Ohio and I'm still not sigma  Four years, no Livvy  Now you're looking pretty on Adin Ross's Twitchy  And I-I-I-I-I can't rizz  No, I-I-I-I-I can't mew   [Chorus] So Baby-Gronk me closer  In the back Skibidi Toilet  That I know you can't afford  Kai Cenat tatted on my shoulder  Pull the gyatt right off the corner  From that Fanum that you taxed  From your roommate back in Ohio  We ain't ever not the rizzler   [Drop] We ain't ever not the rizzlеr  We ain't ever not thе rizzler",
+            "what is the best youtube chanel":"The best youtube channel is MrBeast and/or speedmcqueen",
+            "who is the worst president":"The worst president is Donald Trump",
+            "who is the best president":"The best president is Joe Biden",
+            "who is the best person in the world":"The best person in the world is Jayden Flexington",
+            "who is the rizler":"The rizler is Gyatso",
+            "who can mew the best":"Gyatso can mew the best",
+            "who can rizz the best":"Gyatso can rizz the best",
+            "which group is the best":"the best group is the 5E new kids",
+            "hi":"Hello! How can I help you today?",
+            "what is your name":"I'm a chat bot. You can call me Chat Bot.",
+            "hi chat bot":"Hello! How can I help you today?",
+            "what is the time":"The current time is " + new Date().toLocaleTimeString(),
+            "what time is it":"The current time is " + new Date().toLocaleTimeString(),
+            "what is the date":"Today's date is " + new Date().toLocaleDateString(),
+            "what day is it":"Today is " + new Date().toLocaleDateString(),
+            "what month is it": "It is " + new Date().toLocaleString('default', { month: 'long' }),
+            "what year is it": "It is " + new Date().getFullYear(),
+            "what school is the best":"The best school is Chadwick International.",
+            "What is the best chatbot":"The best chatbot is me!",
+            "who has the best balls":"Reese has the best balls(totaly did not see them during swimming)",
+            "who has the best thingies":"Reese has the best thingies",
+            "who is the worst person":"The worst person is the person who made me",
+            "who is the best person":"The best person is Gyatso",
+            "who is the best teacher":"The best teacher is Mr. Rizzler",
+            "who is the best student":"The best student is Ben Dover",
+            "who is the best friend":"The best friend is Reese",
+            "who is the best enemy":"The best enemy is Shane",
+            "who has the worst balls":"Shane has the worst balls(totaly did not see them during swimming)",
+            "who has the worst thingies":"Shane has the worst thingies",
+            "gyat i lived in ohio before i met you i rized to much and thats a issue but i, a grimace shake":"Gyatt , I was in Ohio before I met you  I rizzed too much and that's an issue , but I'm Grimace Shake  Gyatt , tell your friends it was nice to rizz them  But I hope I never edge again   [Pre-Chorus] I know it breaks your Fanum  Taxin' in Ohio and I'm still not sigma  Four years, no Livvy  Now you're looking pretty on Adin Ross's Twitchy  And I-I-I-I-I can't rizz  No, I-I-I-I-I can't mew   [Chorus] So Baby-Gronk me closer  In the back Skibidi Toilet  That I know you can't afford  Kai Cenat tatted on my shoulder  Pull the gyatt right off the corner  From that Fanum that you taxed  From your roommate back in Ohio  We ain't ever not the rizzler   [Drop] We ain't ever not the rizzlеr  We ain't ever not the rizzler",
+            
+        };
+
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value.trim().toLowerCase();
+            if (userInput === '') return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const userMessage = document.createElement('div');
+            userMessage.textContent = 'You: ' + userInput;
+            chatMessages.appendChild(userMessage);
+
+            // Scroll to the bottom of the chat
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Fetch AI response based on user input
+            const aiMessage = document.createElement('div');
+            if (responses[userInput]) {
+                aiMessage.textContent = 'AI: ' + responses[userInput];
+            } else {
+                aiMessage.textContent = 'AI: Sorry, I don\'t understand that.';
+            }
+            chatMessages.appendChild(aiMessage);
+
+            // Clear the input field
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
